@@ -1,5 +1,27 @@
-* This is a minimal snapshot from my nix stockholm
+* Some of my nix files.
+
+** What it is?
+
+This repository contains of my nix files
+that I normally use on all my NixOS desktop computers.
+
+Currently it contains my:
+- i3 configuration
+- emacs configuration.
+
+** i3 configuration
+
+It is mostly the generated i3 configuration file.
+Additional it contains firefox and my-emacs-server
+on startup.
+
+** emacs configuration
+
+It is quite lengthy as it is based on modified
+emacs org-mode configuration by Bernt Hansen as
+explained in: [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life In Plain Text!]]
+
+** Note
 
 It is independent from any krebso stockholm mechanism
 and can be used on a vanilla NixOS.
-
