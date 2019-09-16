@@ -1,0 +1,5 @@
+* This is a minimal snapshot from my nix stockholm
+
+It is independent from any krebso stockholm mechanism
+and can be used on a vanilla NixOS.
+
