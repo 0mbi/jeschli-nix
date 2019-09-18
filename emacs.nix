@@ -159,11 +159,11 @@ let
 
     epkgs.melpaPackages.elpy
 
+    epkgs.elpaPackages.bbdb
     epkgs.orgPackages.org-plus-contrib
     epkgs.melpaPackages.smex
     epkgs.melpaPackages.org-mime
 
-    epkgs.elpaPackages.bbdb
     epkgs.elpaPackages.which-key
   ]);
 
