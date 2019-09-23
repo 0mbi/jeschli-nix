@@ -127,6 +127,12 @@ let
     (global-set-key "\C-x\ \C-r" 'recentf-open-files)
   '';
 
+  killActualBuffer = ''
+    (fset 'kill-actual-buffer
+      [?\C-x ?k return])
+    (global-set-key (kbd "<f5>") 'kill-actual-buffer)
+  '';
+
   dotEmacs = pkgs.writeText "dot-emacs" ''
     ${packageRepos}
 
@@ -141,6 +147,7 @@ let
     ${windowCosmetics}
 
     ${orgAgendaView}
+    ${killActualBuffer}
   '';
 
   emacsWithCustomPackages = (pkgs.emacsPackagesNgGen pkgs.emacs).emacsWithPackages (epkgs: [
