@@ -151,6 +151,9 @@ let
   '';
 
   emacsWithCustomPackages = (pkgs.emacsPackagesNgGen pkgs.emacs).emacsWithPackages (epkgs: [
+#testing
+    epkgs.melpaPackages.gitlab
+
 # emacs convenience
     epkgs.melpaPackages.ag
     epkgs.melpaPackages.company
