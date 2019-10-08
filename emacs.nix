@@ -187,6 +187,7 @@ let
 #testing
     epkgs.melpaPackages.gitlab
     epkgs.melpaPackages.forge
+    epkgs.melpaPackages.helm
 
 # emacs convenience
     epkgs.melpaPackages.ag
@@ -199,8 +200,17 @@ let
 # development
     epkgs.melpaPackages.magit
     epkgs.melpaPackages.nix-mode
-    epkgs.melpaPackages.go-mode
     epkgs.melpaPackages.haskell-mode
+    epkgs.melpaPackages.projectile
+
+# go development
+    epkgs.melpaPackages.go-mode
+    epkgs.melpaPackages.company-go
+    epkgs.melpaPackages.go-eldoc
+    epkgs.melpaPackages.gotest
+    epkgs.melpaPackages.go-projectile
+
+
 # rust
     epkgs.melpaPackages.rust-mode
     epkgs.melpaPackages.flycheck-rust
