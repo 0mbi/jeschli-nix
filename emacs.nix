@@ -26,6 +26,13 @@ let
     (package-initialize)
   '';
 
+# How to make emacs stop creating “backup~” files or “#autosave#” files?
+# http://ergoemacs.org/emacs/emacs_set_backup_into_a_directory.html
+  turnOffBackup = ''
+    (setq make-backup-files nil) ; stop creating backup~ files
+    (setq auto-save-default nil) ; stop creating #autosave# files
+  '';
+
   evilMode = ''
     ;; Evil Mode
     (require 'evil)
@@ -158,6 +165,7 @@ let
 
   dotEmacs = pkgs.writeText "dot-emacs" ''
     ${packageRepos}
+    ${turnOffBackup}
 
     ${evilMode}
     ${goMode}
