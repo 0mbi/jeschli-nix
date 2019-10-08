@@ -52,7 +52,8 @@ let
       (setq-default)
       (setq tab-width 2)
       (setq standard-indent 2)
-      (setq indent-tabs-mode nil)))
+      (setq indent-tabs-mode nil)
+    ))
   '';
 
   ido = ''
