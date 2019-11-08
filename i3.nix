@@ -19,7 +19,7 @@ let
   floating_modifier $mod
 
   # start a terminal
-  bindsym $mod+Return exec i3-sensible-terminal
+  bindsym $mod+Return exec alacritty
 
   # kill focused window
   bindsym $mod+Shift+q kill
@@ -238,6 +238,7 @@ services.xserver.enable = true;
     rofi     # Dmenu replacement
     acpilight # Replacement for xbacklight
     arandr # Xrandr gui
+    alacritty
     feh
     wirelesstools # To get wireless statistics
     acpi
