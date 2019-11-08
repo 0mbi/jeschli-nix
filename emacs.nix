@@ -91,7 +91,7 @@ let
     (setq org-link-frame-setup '((file . find-file))) ; open link in same frame.
     (if (boundp 'org-user-agenda-files)
       (setq org-agenda-files org-user-agenda-files)
-      (setq org-agenda-files (quote ("~/projects/notes_privat")))
+      (setq org-agenda-files (quote ("~/projects/notes_privat" "~/projects/notes_dcso")))
     )
   '';
 
@@ -195,8 +195,52 @@ let
   #emacsWithCustomPackages
   emacsPkgs= epkgs: [
 #testing
-    epkgs.melpaPackages.gitlab
+    epkgs.melpaPackages.helm
     epkgs.melpaPackages.forge
+
+
+# emacs convenience
+    epkgs.melpaPackages.ag
+    epkgs.melpaPackages.company
+    epkgs.melpaPackages.direnv
+    epkgs.melpaPackages.evil
+    epkgs.melpaPackages.google-this
+    epkgs.melpaPackages.monokai-alt-theme
+
+# development
+    epkgs.melpaPackages.magit
+    epkgs.melpaPackages.nix-mode
+    epkgs.melpaPackages.haskell-mode
+    epkgs.melpaPackages.projectile
+
+# go development
+    epkgs.melpaPackages.go-mode
+    epkgs.melpaPackages.company-go
+    epkgs.melpaPackages.go-eldoc
+    epkgs.melpaPackages.gotest
+    epkgs.melpaPackages.go-projectile
+
+# rust
+    epkgs.melpaPackages.rust-mode
+    # epkgs.melpaPackages.flycheck-rust # currently broken
+    epkgs.melpaPackages.racer
+
+# python
+    epkgs.melpaPackages.elpy
+
+# org-mode
+    epkgs.elpaPackages.bbdb
+    epkgs.orgPackages.org-plus-contrib
+    epkgs.melpaPackages.smex
+    epkgs.melpaPackages.org-mime
+
+    epkgs.elpaPackages.which-key
+  ];
+
+
+#emacsWithCustomPackages
+  testPkgs= epkgs: [
+##testing
     epkgs.melpaPackages.helm
 
 # emacs convenience
@@ -220,8 +264,6 @@ let
     epkgs.melpaPackages.gotest
     epkgs.melpaPackages.go-projectile
 
-    # epkgs.melpaPackages.flycheck-rust # currently broken
-
 # rust
     epkgs.melpaPackages.rust-mode
     epkgs.melpaPackages.flycheck-rust
@@ -238,13 +280,23 @@ let
 
     epkgs.elpaPackages.which-key
   ];
-emacsWithOverlay = (pkgsWithOverlay.emacsWithPackagesFromUsePackage {
+
+  emacsWithOverlay = (pkgsWithOverlay.emacsWithPackagesFromUsePackage {
       config = builtins.readFile dotEmacs; # builtins.readFile ./emacs.el;
       # Package is optional, defaults to pkgs.emacs
       package = pkgsWithOverlay.emacsGit;
       # Optionally provide extra packages not in the configuration file
       extraEmacsPackages = emacsPkgs;
-    });
+  });
+
+  testEmacs = (pkgsWithOverlay.emacsWithPackagesFromUsePackage {
+      config = builtins.readFile dotEmacs; # builtins.readFile ./emacs.el;
+      # Package is optional, defaults to pkgs.emacs
+      package = pkgsWithOverlay.emacsGit;
+      # Optionally provide extra packages not in the configuration file
+      extraEmacsPackages = testPkgs;
+  });
+
 
   myEmacs = pkgs.writeDashBin "my-emacs" ''
     exec ${emacsWithOverlay}/bin/emacs -q -l ${dotEmacs} "$@"
@@ -257,8 +309,13 @@ emacsWithOverlay = (pkgsWithOverlay.emacsWithPackagesFromUsePackage {
   myEmacsClient = pkgs.writeDashBin "meclient" ''
     exec ${emacsWithOverlay}/bin/emacsclient --create-frame
   '';
+
+  tEmacs = pkgs.writeDashBin "test-emacs" ''
+    exec ${testEmacs}/bin/emacs
+  '';
+
 in {
   environment.systemPackages = [
-    myEmacs myEmacsWithDaemon myEmacsClient
+    tEmacs myEmacs myEmacsWithDaemon myEmacsClient
   ];
 }
