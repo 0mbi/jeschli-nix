@@ -164,6 +164,14 @@ let
     (global-set-key (kbd "<f8>") 'delete-other-windows)
   '';
 
+  webMode = ''
+    (setq js-indent-level 2)
+  '';
+
+  trailingWhitespaces = ''
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  '';
+
   dotEmacs = pkgs.writeText "dot-emacs" ''
     ${packageRepos}
     ${turnOffBackup}
@@ -180,6 +188,8 @@ let
 
     ${orgAgendaView}
     ${myFunctionKeys}
+    ${webMode}
+    ${trailingWhitespaces}
   '';
 
   #emacsWithCustomPackages
