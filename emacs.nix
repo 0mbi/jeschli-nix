@@ -220,6 +220,7 @@ let
     epkgs.melpaPackages.gotest
     epkgs.melpaPackages.go-projectile
 
+    # epkgs.melpaPackages.flycheck-rust # currently broken
 
 # rust
     epkgs.melpaPackages.rust-mode
