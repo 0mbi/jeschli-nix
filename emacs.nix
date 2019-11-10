@@ -26,13 +26,6 @@ let
     (package-initialize)
   '';
 
-# How to make emacs stop creating “backup~” files or “#autosave#” files?
-# http://ergoemacs.org/emacs/emacs_set_backup_into_a_directory.html
-  turnOffBackup = ''
-    (setq make-backup-files nil) ; stop creating backup~ files
-    (setq auto-save-default nil) ; stop creating #autosave# files
-  '';
-
   evilMode = ''
     ;; Evil Mode
     (require 'evil)
@@ -52,8 +45,7 @@ let
       (setq-default)
       (setq tab-width 2)
       (setq standard-indent 2)
-      (setq indent-tabs-mode nil)
-    ))
+      (setq indent-tabs-mode nil)))
   '';
 
   ido = ''
@@ -61,11 +53,15 @@ let
     (ido-mode t)
   '';
 
+  helm = ''
+    (helm-mode 1)
+    (global-set-key (kbd "M-x") #'helm-M-x)
+    (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+    (global-set-key (kbd "C-x C-f") #'helm-find-files)
+  '';
+
   magit = ''
     (global-set-key (kbd "C-x g") 'magit-status) ; "Most Magit commands are commonly invoked from the status buffer"
-
-    (with-eval-after-load 'magit
-      (require 'forge))
   '';
 
   windowCosmetics = ''
@@ -91,7 +87,7 @@ let
     (setq org-link-frame-setup '((file . find-file))) ; open link in same frame.
     (if (boundp 'org-user-agenda-files)
       (setq org-agenda-files org-user-agenda-files)
-      (setq org-agenda-files (quote ("~/projects/notes_privat" "~/projects/notes_dcso")))
+      (setq org-agenda-files (quote ("~/projects/notes_privat")))
     )
   '';
 
@@ -164,40 +160,47 @@ let
     (global-set-key (kbd "<f8>") 'delete-other-windows)
   '';
 
-  webMode = ''
-    (setq js-indent-level 2)
-  '';
-
-  trailingWhitespaces = ''
-    (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  lspMode = ''
+    (require 'lsp-mode)
+    (add-hook 'rust-mode-hook #'lsp)
   '';
 
   dotEmacs = pkgs.writeText "dot-emacs" ''
     ${packageRepos}
-    ${turnOffBackup}
 
     ${evilMode}
     ${goMode}
-    ${ido}
+    ${helm}
     ${magit}
     ${orgMode}
-    ${recentFiles}
     ${rustDevelopment}
     ${theme}
     ${windowCosmetics}
 
     ${orgAgendaView}
     ${myFunctionKeys}
-    ${webMode}
-    ${trailingWhitespaces}
+    ${lspMode}
   '';
 
   #emacsWithCustomPackages
   emacsPkgs= epkgs: [
-#testing
-    epkgs.melpaPackages.helm
-    epkgs.melpaPackages.forge
+    # testing lsp mode
+    epkgs.melpaPackages.lsp-ui
+    epkgs.melpaPackages.company-lsp
+    epkgs.melpaPackages.lsp-treemacs
+    epkgs.melpaPackages.helm-lsp
+    epkgs.melpaPackages.dap-mode
 
+    # testing
+    epkgs.melpaPackages.web-mode
+    epkgs.melpaPackages.js2-mode
+    epkgs.melpaPackages.xref-js2
+
+    epkgs.melpaPackages.academic-phrases
+
+    epkgs.melpaPackages.gitlab
+    epkgs.melpaPackages.helm
+    epkgs.melpaPackages.weechat
 
 # emacs convenience
     epkgs.melpaPackages.ag
@@ -210,19 +213,10 @@ let
 # development
     epkgs.melpaPackages.magit
     epkgs.melpaPackages.nix-mode
-    epkgs.melpaPackages.haskell-mode
-    epkgs.melpaPackages.projectile
-
-# go development
     epkgs.melpaPackages.go-mode
-    epkgs.melpaPackages.company-go
-    epkgs.melpaPackages.go-eldoc
-    epkgs.melpaPackages.gotest
-    epkgs.melpaPackages.go-projectile
-
+    epkgs.melpaPackages.haskell-mode
 # rust
     epkgs.melpaPackages.rust-mode
-    # epkgs.melpaPackages.flycheck-rust # currently broken
     epkgs.melpaPackages.racer
 
 # python
@@ -235,68 +229,16 @@ let
     epkgs.melpaPackages.org-mime
 
     epkgs.elpaPackages.which-key
+    epkgs.melpaPackages.lsp-mode
   ];
 
-
-#emacsWithCustomPackages
-  testPkgs= epkgs: [
-##testing
-    epkgs.melpaPackages.helm
-
-# emacs convenience
-    epkgs.melpaPackages.ag
-    epkgs.melpaPackages.company
-    epkgs.melpaPackages.direnv
-    epkgs.melpaPackages.evil
-    epkgs.melpaPackages.google-this
-    epkgs.melpaPackages.monokai-alt-theme
-
-# development
-    epkgs.melpaPackages.magit
-    epkgs.melpaPackages.nix-mode
-    epkgs.melpaPackages.haskell-mode
-    epkgs.melpaPackages.projectile
-
-# go development
-    epkgs.melpaPackages.go-mode
-    epkgs.melpaPackages.company-go
-    epkgs.melpaPackages.go-eldoc
-    epkgs.melpaPackages.gotest
-    epkgs.melpaPackages.go-projectile
-
-# rust
-    epkgs.melpaPackages.rust-mode
-    epkgs.melpaPackages.flycheck-rust
-    epkgs.melpaPackages.racer
-
-# python
-    epkgs.melpaPackages.elpy
-
-# org-mode
-    epkgs.elpaPackages.bbdb
-    epkgs.orgPackages.org-plus-contrib
-    epkgs.melpaPackages.smex
-    epkgs.melpaPackages.org-mime
-
-    epkgs.elpaPackages.which-key
-  ];
-
-  emacsWithOverlay = (pkgsWithOverlay.emacsWithPackagesFromUsePackage {
-      config = builtins.readFile dotEmacs; # builtins.readFile ./emacs.el;
-      # Package is optional, defaults to pkgs.emacs
-      package = pkgsWithOverlay.emacsGit;
-      # Optionally provide extra packages not in the configuration file
-      extraEmacsPackages = emacsPkgs;
-  });
-
-  testEmacs = (pkgsWithOverlay.emacsWithPackagesFromUsePackage {
-      config = builtins.readFile dotEmacs; # builtins.readFile ./emacs.el;
-      # Package is optional, defaults to pkgs.emacs
-      package = pkgsWithOverlay.emacsGit;
-      # Optionally provide extra packages not in the configuration file
-      extraEmacsPackages = testPkgs;
-  });
-
+  emacsWithOverlay = pkgsWithOverlay.emacsWithPackagesFromUsePackage {
+    config = builtins.readFile dotEmacs; # builtins.readFile ./emacs.el;
+    # Package is optional, defaults to pkgs.emacs
+    package = pkgsWithOverlay.emacsGit;
+    # Optionally provide extra packages not in the configuration file
+    extraEmacsPackages = emacsPkgs;
+  };
 
   myEmacs = pkgs.writeDashBin "my-emacs" ''
     exec ${emacsWithOverlay}/bin/emacs -q -l ${dotEmacs} "$@"
@@ -309,13 +251,8 @@ let
   myEmacsClient = pkgs.writeDashBin "meclient" ''
     exec ${emacsWithOverlay}/bin/emacsclient --create-frame
   '';
-
-  tEmacs = pkgs.writeDashBin "test-emacs" ''
-    exec ${testEmacs}/bin/emacs
-  '';
-
 in {
   environment.systemPackages = [
-    tEmacs myEmacs myEmacsWithDaemon myEmacsClient
+    myEmacs myEmacsWithDaemon myEmacsClient
   ];
 }
