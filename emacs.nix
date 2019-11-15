@@ -190,6 +190,7 @@ let
     epkgs.melpaPackages.lsp-treemacs
     epkgs.melpaPackages.helm-lsp
     epkgs.melpaPackages.dap-mode
+    epkgs.melpaPackages.lsp-mode
 
     # testing
     epkgs.melpaPackages.web-mode
@@ -209,6 +210,7 @@ let
     epkgs.melpaPackages.evil
     epkgs.melpaPackages.google-this
     epkgs.melpaPackages.monokai-alt-theme
+    epkgs.melpaPackages.zenburn-theme
 
 # development
     epkgs.melpaPackages.magit
@@ -217,6 +219,7 @@ let
     epkgs.melpaPackages.haskell-mode
 # rust
     epkgs.melpaPackages.rust-mode
+#    epkgs.melpaPackages.flycheck-rust
     epkgs.melpaPackages.racer
 
 # python
@@ -227,9 +230,10 @@ let
     epkgs.orgPackages.org-plus-contrib
     epkgs.melpaPackages.smex
     epkgs.melpaPackages.org-mime
+    epkgs.melpaPackages.orgit
+
 
     epkgs.elpaPackages.which-key
-    epkgs.melpaPackages.lsp-mode
   ];
 
   emacsWithOverlay = pkgsWithOverlay.emacsWithPackagesFromUsePackage {
