@@ -123,6 +123,8 @@ let
   #
   # This requires rls and racer to be installed on the system
   rustDevelopment = ''
+    (setq racer-rust-src-path nil) ;; read from shell-nix
+    (setq racer-cmd "racer") ;; read from shell-nix
     (add-hook 'rust-mode-hook #'racer-mode)
     (add-hook 'rust-mode-hook (lambda()
       (local-set-key (kbd "C-c C-d") 'racer-describe)
@@ -210,6 +212,7 @@ let
     epkgs.melpaPackages.evil
     epkgs.melpaPackages.google-this
     epkgs.melpaPackages.monokai-alt-theme
+    epkgs.melpaPackages.spacemacs-theme
     epkgs.melpaPackages.zenburn-theme
 
 # development
